@@ -20,6 +20,7 @@ class Proj4phpTest extends PHPUnit_Framework_TestCase
         $proj25833 = new Proj('EPSG:25833', $proj4);
         $proj31468 = new Proj('EPSG:31468', $proj4);
         $proj5514  = new Proj('EPSG:5514', $proj4);
+        $proj221951 = new Proj('EPSG:221951', $proj4);
 
 // GPS
 // latitude        longitude
@@ -70,6 +71,14 @@ class Proj4phpTest extends PHPUnit_Framework_TestCase
 
         $pointSrc  = $pointDest;
         $pointDest = $proj4->transform($projWGS84, $proj5514, $pointSrc);
+
+        $pointSrc  = new Point('100000', '100000', $proj221951 );
+        $pointDest = $proj4->transform($proj221951, $projWGS84, $pointSrc );
+
+        $pointSrc  = $pointDest;
+        $pointDest = $proj4->transform($projWGS84, $proj221951, $pointSrc );
+
+
     }
 
     /**
@@ -349,5 +358,22 @@ class Proj4phpTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(6859290.9456811, $pointDest->y, '', 0.1);
         $this->assertEquals(652709.40001126, $pointDest->x, '', 0.1);
         $this->assertEquals(6859290.9458141, $pointDest->y, '', 0.1);
+
+    }
+
+    public  function  testMapaBuenosAires()
+    {
+
+        $proj4           = new Proj4php();
+        $projWGS84       = new Proj('EPSG:4326', $proj4);
+        $proj221951      = new Proj('EPSG:221951', $proj4);
+
+        // Plaza de Mayo, Buenos Aires, Argentina.
+        // https://www.google.com.ar/maps/place/Plaza+de+Mayo/@-34.6083623,-58.3744719
+        $pointSrc = new Point('-58.371566','-34.608131');
+        $pointDest = $proj4->transform($projWGS84, $proj221951, $pointSrc);
+
+        $this->assertEquals(108354.73971907, $pointDest->x, '', 50.0);
+        $this->assertEquals(102307.24080755, $pointDest->y, '', 50.0);
     }
 }
